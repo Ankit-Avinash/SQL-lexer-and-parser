@@ -85,6 +85,14 @@ def p_create_table(p):
         tables[p[3]] = pd.DataFrame(columns=p[5].keys()).astype(p[5])
         print('Query OK, 0 rows affected\n')
 
+def p_create_table_if_not_exists(p):
+    'statement : CREATE TABLE IF NOT EXISTS ID LPAREN create_table_col_list RPAREN'
+    if p[6] not in tables:
+        tables[p[6]] = pd.DataFrame(columns=p[8].keys()).astype(p[8])
+        print('Query OK, 0 rows affected\n')
+    else:
+        print('Query OK, 0 rows affected, 1 warning\n')
+
 def p_create_table_col_list(p):
     '''create_table_col_list : create_table_col_list COMMA ID datatype
                              | ID datatype'''
@@ -140,11 +148,15 @@ def p_select(p):
                  | SELECT select_col_list FROM ID'''
     if p[4] in tables:
         df = tables[p[4]]
-        if p[2] == '*':
+        if p[2] != '*':
+            df = df[p[2]]
+
+        if len(df.index):
             pretty_print(df)
+            print(f'{len(df.index)} rows in set\n')
         else:
-            pretty_print(df[p[2]])
-        print(f'{len(df.index)} rows in set\n')
+            print("Empty set")
+
     else:
         print(f'Error: Table \'{p[4]}\' doesn\'t exist')
 
@@ -167,7 +179,9 @@ parser = yacc.yacc()
 os.system('cls')
 while True:
     try:
-        s = input('mysql> ')
+        s = input("mysql> ").strip()
+        while s[-1] != ';':
+            s += ' ' + input("    -> ").strip()
     except EOFError:
         break
     if not s:
