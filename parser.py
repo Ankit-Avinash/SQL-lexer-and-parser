@@ -176,7 +176,11 @@ def p_error(p):
 parser = yacc.yacc()
 
 
-os.system('cls')
+if os.name == 'nt':
+    os.system('cls')
+elif os.name == 'posix':
+    os.system('clear')
+    
 while True:
     try:
         if not (s := input("mysql> ").strip()):
