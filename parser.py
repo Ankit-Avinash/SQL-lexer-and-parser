@@ -179,11 +179,10 @@ parser = yacc.yacc()
 os.system('cls')
 while True:
     try:
-        s = input("mysql> ").strip()
-        while s[-1] != ';':
+        if not (s := input("mysql> ").strip()):
+            continue
+        while not s or s[-1] != ';':
             s += ' ' + input("    -> ").strip()
     except EOFError:
         break
-    if not s:
-        continue
     parser.parse(s)
