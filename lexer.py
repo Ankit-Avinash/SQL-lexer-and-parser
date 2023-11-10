@@ -49,12 +49,7 @@ reserved = {
     'from': 'FROM',
     'select': 'SELECT',
     'update': 'UPDATE',
-
-    'unique': 'UNIQUE',
-    'primary': 'PRIMARY',
-    'key': 'KEY',
-    'default': 'DEFAULT',
-    'check': 'CHECK',
+    'set': 'SET',
 
     'not': 'NOT',
     'and': 'AND',
@@ -139,7 +134,7 @@ lexer = lex.lex()
 if __name__ == '__main__':
     data = '''
     -- blah blah blah
-    select * from student where age >= 10.5 age <= 20;
+    update test set col1='a';
     '''
 
     lexer.input(data)
